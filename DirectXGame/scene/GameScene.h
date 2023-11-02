@@ -48,5 +48,5 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	Model* model_ = nullptr;
+	Model* model_ = nullptr;	// モデルクラステスト用
 };
