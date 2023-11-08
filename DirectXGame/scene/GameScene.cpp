@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include "AxisIndicator.h"
 
 GameScene::GameScene() {}
 
@@ -11,9 +12,20 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	viewProjection_.Initialize();
+
+	model_.reset(Model::CreateFromOBJ("float", true));
+
+	player_ = std::make_unique<Player>();
+	player_->Initialize(model_.get());
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+
+	player_->Update();
+
+}
 
 void GameScene::Draw() {
 
@@ -37,6 +49,8 @@ void GameScene::Draw() {
 #pragma region 3Dオブジェクト描画
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
+
+	player_->Draw(viewProjection_);
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

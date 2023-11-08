@@ -9,6 +9,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+#include "Player.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -48,5 +50,15 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	Model* model_ = nullptr;	// モデルクラステスト用
+
+	//プレイヤー
+	std::unique_ptr<Player> player_;
+
+	std::unique_ptr<Model> model_;
+
+	//Model* model_ = nullptr;	// モデルクラステスト用
+
+	WorldTransform worldTransform_;
+
+	ViewProjection viewProjection_;
 };
