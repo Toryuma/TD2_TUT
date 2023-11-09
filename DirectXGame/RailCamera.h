@@ -1,19 +1,23 @@
-#pragma once
+ï»¿#pragma once
 
-#include "Model.h"
 #include "WorldTransform.h"
+#include "Model.h"
 
 class RailCamera {
 public:
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void Initialize();
 
-	// XV
+	// æ›´æ–°
 	void Update();
+	const ViewProjection& GetViewProjecton() { return viewprojection_; }
+
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’å–å¾—
+	const WorldTransform& GetWorldTransform() { return worldtransform_; }
 
 private:
-	// ƒ[ƒ‹ƒh•ÏŠ·ƒf[ƒ^
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ãƒ‡ãƒ¼ã‚¿
 	WorldTransform worldtransform_;
-	// ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“
+	// ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³
 	ViewProjection viewprojection_;
 };
