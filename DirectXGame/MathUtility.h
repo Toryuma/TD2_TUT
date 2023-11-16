@@ -14,6 +14,8 @@ Vector3 Subtract(Vector3& v1, Vector3& v2);
 
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
+Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix);
+
 float Dot(Vector3 a, Vector3 b);
 float Length(Vector3 a);
 Vector3 Normalize(const Vector3& v);
@@ -32,3 +34,7 @@ Matrix4x4 MakeRotateYMatrix(float theta);
 Matrix4x4 MakeRotateXMatrix(float theta);
 Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 Matrix4x4 MakeIdentityMatrix();
+
+Matrix4x4 MakeRotateMatrix(const Vector3& r);
+
+Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);

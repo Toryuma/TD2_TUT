@@ -47,6 +47,19 @@ Matrix4x4 MakeRotateZMatrix(float theta) {
 	return result;
 }
 
+Matrix4x4 MakeRotateMatrix(const Vector3& r) {
+
+	Matrix4x4 result = {};
+
+	Matrix4x4 rotateX = MakeRotateXMatrix(r.x);
+	Matrix4x4 rotateY = MakeRotateYMatrix(r.y);
+	Matrix4x4 rotateZ = MakeRotateZMatrix(r.z);
+
+	result = Multiply(rotateX, Multiply(rotateY, rotateZ));
+
+	return result;
+}
+
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 	Matrix4x4 result{1.0f, 0.0f, 0.0f, 0.0f, 0.0f,        1.0f,        0.0f,        0.0f,
 	                 0.0f, 0.0f, 1.0f, 0.0f, translate.x, translate.y, translate.z, 1.0f};
@@ -98,6 +111,49 @@ Vector3 Multiply(float a, Vector3 v2) {
 	return multi;
 }
 
+Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
+
+	Matrix4x4 Sub = {};
+
+	Sub.m[0][0] = m1.m[0][0] * m2.m[0][0] + m1.m[0][1] * m2.m[1][0] + m1.m[0][2] * m2.m[2][0] +
+	              m1.m[0][3] * m2.m[3][0];
+	Sub.m[0][1] = m1.m[0][0] * m2.m[0][1] + m1.m[0][1] * m2.m[1][1] + m1.m[0][2] * m2.m[2][1] +
+	              m1.m[0][3] * m2.m[3][1];
+	Sub.m[0][2] = m1.m[0][0] * m2.m[0][2] + m1.m[0][1] * m2.m[1][2] + m1.m[0][2] * m2.m[2][2] +
+	              m1.m[0][3] * m2.m[3][2];
+	Sub.m[0][3] = m1.m[0][0] * m2.m[0][3] + m1.m[0][1] * m2.m[1][3] + m1.m[0][2] * m2.m[2][3] +
+	              m1.m[0][3] * m2.m[3][3];
+
+	Sub.m[1][0] = m1.m[1][0] * m2.m[0][0] + m1.m[1][1] * m2.m[1][0] + m1.m[1][2] * m2.m[2][0] +
+	              m1.m[1][3] * m2.m[3][0];
+	Sub.m[1][1] = m1.m[1][0] * m2.m[0][1] + m1.m[1][1] * m2.m[1][1] + m1.m[1][2] * m2.m[2][1] +
+	              m1.m[1][3] * m2.m[3][1];
+	Sub.m[1][2] = m1.m[1][0] * m2.m[0][2] + m1.m[1][1] * m2.m[1][2] + m1.m[1][2] * m2.m[2][2] +
+	              m1.m[1][3] * m2.m[3][2];
+	Sub.m[1][3] = m1.m[1][0] * m2.m[0][3] + m1.m[1][1] * m2.m[1][3] + m1.m[1][2] * m2.m[2][3] +
+	              m1.m[1][3] * m2.m[3][3];
+
+	Sub.m[2][0] = m1.m[2][0] * m2.m[0][0] + m1.m[2][1] * m2.m[1][0] + m1.m[2][2] * m2.m[2][0] +
+	              m1.m[2][3] * m2.m[3][2];
+	Sub.m[2][1] = m1.m[2][0] * m2.m[0][1] + m1.m[2][1] * m2.m[1][1] + m1.m[2][2] * m2.m[2][1] +
+	              m1.m[2][3] * m2.m[3][1];
+	Sub.m[2][2] = m1.m[0][0] * m2.m[0][2] + m1.m[2][1] * m2.m[1][2] + m1.m[2][2] * m2.m[2][2] +
+	              m1.m[2][3] * m2.m[3][2];
+	Sub.m[2][3] = m1.m[0][0] * m2.m[0][3] + m1.m[2][1] * m2.m[1][3] + m1.m[2][2] * m2.m[2][3] +
+	              m1.m[2][3] * m2.m[3][3];
+
+	Sub.m[3][0] = m1.m[3][0] * m2.m[0][0] + m1.m[3][1] * m2.m[1][0] + m1.m[3][2] * m2.m[2][0] +
+	              m1.m[3][3] * m2.m[3][0];
+	Sub.m[3][1] = m1.m[3][0] * m2.m[0][1] + m1.m[3][1] * m2.m[1][1] + m1.m[3][2] * m2.m[2][1] +
+	              m1.m[3][3] * m2.m[3][1];
+	Sub.m[3][2] = m1.m[3][0] * m2.m[0][2] + m1.m[3][1] * m2.m[1][2] + m1.m[3][2] * m2.m[2][2] +
+	              m1.m[3][3] * m2.m[3][2];
+	Sub.m[3][3] = m1.m[3][0] * m2.m[0][3] + m1.m[3][1] * m2.m[1][3] + m1.m[3][2] * m2.m[2][3] +
+	              m1.m[3][3] * m2.m[3][3];
+
+	return Sub;
+}
+
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	Vector3 Trans;
 
@@ -117,6 +173,17 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	return Trans;
 };
 
+Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix) {
+	Vector3 Trans;
+
+	Trans.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0];
+	         
+	Trans.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1];
+	          
+	Trans.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2]; 
+
+	return Trans;
+};
 
 Matrix4x4& operator*=(Matrix4x4& lhm, const Matrix4x4& rhm) {
 	Matrix4x4 result{};

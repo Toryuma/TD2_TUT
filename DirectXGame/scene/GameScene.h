@@ -10,6 +10,11 @@
 #include "WorldTransform.h"
 
 #include "Player.h"
+#include "Enemy.h"
+
+#include "Ground.h"
+
+#include "FollowCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -42,6 +47,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void CheckAllCollision();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -54,7 +61,17 @@ private: // メンバ変数
 	//プレイヤー
 	std::unique_ptr<Player> player_;
 
+	std::unique_ptr<FollowCamera> followCamera_;
+
+	std::unique_ptr<Ground> ground_;
+
+	//std::unique_ptr<Enemy> enemy_;
+
+	//std::unique_ptr<Wall> wall_;
+
 	std::unique_ptr<Model> model_;
+
+	std::unique_ptr<Model> modelGround_;
 
 	//Model* model_ = nullptr;	// モデルクラステスト用
 

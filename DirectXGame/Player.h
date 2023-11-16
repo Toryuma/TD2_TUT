@@ -3,14 +3,18 @@
 #include "Input.h"
 #include "Model.h"
 #include "WorldTransform.h"
+#include "ViewProjection.h"
 
 class Player {
 public:
+
 	void Initialize(Model* model);
 
 	void Update();
 
 	void Draw(ViewProjection& viewProjection);
+
+	void OnCollision();
 
 	const WorldTransform& GetWorldTransform() { return worldTransform_; }
 
@@ -19,9 +23,17 @@ public:
 	}
 
 private:
+
 	WorldTransform worldTransform_;
 
 	Model* model_ = nullptr;
 
 	const ViewProjection* viewProjection_ = nullptr;
+
+	Vector3 velocity_ = {};
+
+	bool PlayerMoveFlag_;
+
+	int PlayerMoveCount_;
+
 };

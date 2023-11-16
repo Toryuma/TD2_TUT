@@ -10,20 +10,67 @@ GameScene::~GameScene() {}
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
+
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
 	viewProjection_.Initialize();
+	viewProjection_.farZ = 1600.0f;
+	viewProjection_.UpdateMatrix();
 
+	modelGround_.reset(Model::CreateFromOBJ("ground", true));
+
+	ground_ = std::make_unique<Ground>();
+	ground_->Initialize(modelGround_.get());
+
+	//プレイヤー
 	model_.reset(Model::CreateFromOBJ("float", true));
-
 	player_ = std::make_unique<Player>();
 	player_->Initialize(model_.get());
+
+	// Enemy
+	/*model_.reset(Model::CreateFromOBJ("needle_Body", true));
+	enemy_ = std::make_unique<Enemy>();
+	enemy_->Initialize(model_.get());*/
+
+
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize();
+	followCamera_->SetTarget(&player_->GetWorldTransform());
+
+	player_->SetViewProjection(&followCamera_->GetViewProjection());
 }
 
 void GameScene::Update() {
 
 	player_->Update();
+	//enemy_->Update();
+
+	followCamera_->Update();
+
+	viewProjection_.matView = followCamera_->GetViewProjection().matView;
+	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+
+	viewProjection_.TransferMatrix();
+
+	//四隅の処理
+	if (worldTransform_.translation_.z >= 50 && worldTransform_.translation_.y >= 0) {
+
+	}
+
+	if (worldTransform_.translation_.z >= 50 && worldTransform_.translation_.y == 100) {
+
+	}
+
+	if () {
+	}
+
+	if () {
+	}
+
+}
+
+void GameScene::CheckAllCollision() {
 
 }
 
@@ -51,6 +98,8 @@ void GameScene::Draw() {
 	Model::PreDraw(commandList);
 
 	player_->Draw(viewProjection_);
+	//enemy_->Draw(viewProjection_);
+	ground_->Draw(viewProjection_);
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
@@ -73,3 +122,5 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+
+

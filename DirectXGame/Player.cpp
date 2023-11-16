@@ -26,12 +26,21 @@ void Player::Update() {
 
 		move = Multiply(speed, Normalize(move));
 
-		worldTransform_.rotation_.y = std::atan2(-move.x, -move.y);
+		Matrix4x4 rotate = MakeRotateMatrix(viewProjection_->rotation_);
+
+		move = TransformNormal(move, rotate);
 
 		worldTransform_.translation_ = Add(worldTransform_.translation_, move);
+
+		worldTransform_.rotation_.y = std::atan2(move.x, move.z);
 	}
 
 	worldTransform_.UpdateMatrix();
+
+	
+
+
+
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
@@ -39,3 +48,5 @@ void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection);
 
 }
+
+void Player::OnCollision() {}
