@@ -53,20 +53,24 @@ void GameScene::Update() {
 
 	viewProjection_.TransferMatrix();
 
-	//四隅の処理
-	if (worldTransform_.translation_.z >= 50 && worldTransform_.translation_.y >= 0) {
+	//四隅の処理 右
+	if (worldTransform_.translation_.z >= 0 && worldTransform_.translation_.y >= 0) {
 
 	}
 
-	if (worldTransform_.translation_.z >= 50 && worldTransform_.translation_.y == 100) {
+	if (worldTransform_.translation_.z >= 0 && worldTransform_.translation_.y >= 100) {
 
 	}
 
-	if () {
+	if (worldTransform_.translation_.z >= 100 && worldTransform_.translation_.y == 100) {
+
 	}
 
-	if () {
+	if (worldTransform_.translation_.z >= 100 && worldTransform_.translation_.y == 0) {
+
 	}
+
+	//四隅の処理 左
 
 }
 
