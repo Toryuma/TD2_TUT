@@ -1,6 +1,9 @@
-#include "Player.h"
-#include <cassert>
+﻿#include "Player.h"
+#include "ImGuiManager.h"
 #include "MathUtility.h"
+#include <cassert>
+
+#define NAX_MOVE 30
 
 void Player::Initialize(Model* model) {
 
@@ -9,44 +12,190 @@ void Player::Initialize(Model* model) {
 	model_ = model;
 
 	worldTransform_.Initialize();
-	worldTransform_.translation_.y = 0.2f;
+	worldTransform_.translation_.y = 0.0f;
 }
 
 void Player::Update() {
-
+	Vector3 move = {0};
 	XINPUT_STATE joyState;
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 
 		const float speed = 0.3f;
 
-		Vector3 move = {
+		move = {
 		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
 		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed};
 
 		move = Multiply(speed, Normalize(move));
 
-		Matrix4x4 rotate = MakeRotateMatrix(viewProjection_->rotation_);
+		/*Matrix4x4 rotate = MakeRotateMatrix(viewProjection_->rotation_);
 
 		move = TransformNormal(move, rotate);
 
 		worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 
-		worldTransform_.rotation_.y = std::atan2(move.x, move.z);
+		worldTransform_.rotation_.y = std::atan2(move.x, move.z);*/
+
+		// 四隅の移動処理
+
+		// 上入力したとき
+		if (move.z > 0) {
+
+			// 上に移動
+			if (worldTransform_.translation_.z == 0 &&
+				worldTransform_.translation_.y < NAX_MOVE) {
+
+				worldTransform_.translation_.y += playerSpeed_;
+			}
+			// 奥方向に向かう処理
+			else if (
+			    worldTransform_.translation_.y == NAX_MOVE &&
+			    worldTransform_.translation_.z < NAX_MOVE) {
+
+				worldTransform_.translation_.z += playerSpeed_;
+			}
+
+			// 下る処理
+			else if (
+			    worldTransform_.translation_.z == NAX_MOVE &&
+				worldTransform_.translation_.y > 0) {
+
+				worldTransform_.translation_.y -= playerSpeed_;
+			}
+			// 　手前に来る
+			else if (worldTransform_.translation_.z > 0 &&
+				worldTransform_.translation_.y == 0) {
+
+				worldTransform_.translation_.z -= playerSpeed_;
+			}
+
+			worldTransform_.translation_.z = Clamp(worldTransform_.translation_.z, 0, NAX_MOVE);
+			worldTransform_.translation_.y = Clamp(worldTransform_.translation_.y, 0, NAX_MOVE);
+		}
+
+
+		//下に入力したときに
+		if (move.z < 0) {
+
+			// 奥に移動
+			if (worldTransform_.translation_.z < NAX_MOVE && worldTransform_.translation_.y == 0) {
+
+				worldTransform_.translation_.z += playerSpeed_;
+			}
+
+			// 上に向かう処理(奥)
+			else if (
+			    worldTransform_.translation_.z == NAX_MOVE && worldTransform_.translation_.y < NAX_MOVE) {
+
+				worldTransform_.translation_.y += playerSpeed_;
+			}
+
+			// 手前に戻る処理
+			else if (
+			    worldTransform_.translation_.z > 0 && worldTransform_.translation_.y == NAX_MOVE) {
+
+				worldTransform_.translation_.z -= playerSpeed_;
+			}
+
+			//  下に戻る（手前）
+			else if (worldTransform_.translation_.z < NAX_MOVE && worldTransform_.translation_.y > 0) {
+
+				worldTransform_.translation_.y -= playerSpeed_;
+			}
+
+			worldTransform_.translation_.z = Clamp(worldTransform_.translation_.z, 0, NAX_MOVE);
+			worldTransform_.translation_.y = Clamp(worldTransform_.translation_.y, 0, NAX_MOVE);
+		}
+
+		//横の移動処理
+
+		//順
+		if (move.x > 0) {
+
+			// 横に移動
+			if (worldTransform_.translation_.z == 0 && worldTransform_.translation_.x < NAX_MOVE &&
+				worldTransform_.translation_.y < NAX_MOVE) {
+
+				worldTransform_.translation_.x += playerSpeed_;
+			}
+
+			//横に移動（上）
+			else if (worldTransform_.translation_.z == 0 && worldTransform_.translation_.x < NAX_MOVE && 
+				worldTransform_.translation_.y >= NAX_MOVE) {
+
+				worldTransform_.translation_.x += playerSpeed_;
+			}
+
+			//横に移動（奥）
+			else if (worldTransform_.translation_.z >= NAX_MOVE && worldTransform_.translation_.x < NAX_MOVE &&
+			    worldTransform_.translation_.y < NAX_MOVE) {
+
+				worldTransform_.translation_.x += playerSpeed_;
+			}
+
+			//横に移動（奥、上）
+			else if (
+			    worldTransform_.translation_.z >= NAX_MOVE && worldTransform_.translation_.x < NAX_MOVE &&
+			    worldTransform_.translation_.y >= NAX_MOVE) {
+
+				worldTransform_.translation_.x += playerSpeed_;
+			}
+
+			worldTransform_.translation_.z = Clamp(worldTransform_.translation_.z, 0, NAX_MOVE);
+			worldTransform_.translation_.y = Clamp(worldTransform_.translation_.y, 0, NAX_MOVE);
+			worldTransform_.translation_.x = Clamp(worldTransform_.translation_.x, 0, NAX_MOVE);
+		}
+
+		//反
+		if (move.x < 0) {
+
+			// 横に移動
+			if (worldTransform_.translation_.z == 0 &&
+			    worldTransform_.translation_.x > 0 && worldTransform_.translation_.y < NAX_MOVE) {
+
+				worldTransform_.translation_.x -= playerSpeed_;
+			}
+
+			//横に移動（上）
+			else if (worldTransform_.translation_.z == 0 && worldTransform_.translation_.x < NAX_MOVE &&
+			    worldTransform_.translation_.y >= NAX_MOVE) {
+
+				worldTransform_.translation_.x -= playerSpeed_;
+			}
+
+			//横に移動（奥）
+			else if (
+			    worldTransform_.translation_.z >= NAX_MOVE && worldTransform_.translation_.x < NAX_MOVE &&
+			    worldTransform_.translation_.y < NAX_MOVE) {
+
+				worldTransform_.translation_.x -= playerSpeed_;
+			}
+
+			// 横に移動（奥、上）
+			else if (
+			    worldTransform_.translation_.z >= NAX_MOVE && worldTransform_.translation_.x < NAX_MOVE &&
+			    worldTransform_.translation_.y >= NAX_MOVE) {
+
+				worldTransform_.translation_.x -= playerSpeed_;
+			}
+
+			worldTransform_.translation_.z = Clamp(worldTransform_.translation_.z, 0, NAX_MOVE);
+			worldTransform_.translation_.y = Clamp(worldTransform_.translation_.y, 0, NAX_MOVE);
+			worldTransform_.translation_.x = Clamp(worldTransform_.translation_.x, 0, NAX_MOVE);
+		}
 	}
 
 	worldTransform_.UpdateMatrix();
 
-	
-
-
-
+	ImGui::Begin("Player Debug");
+	ImGui::Text(
+	    "PlayerPosition  %f  %f  %f", worldTransform_.translation_.x,
+	    worldTransform_.translation_.y, worldTransform_.translation_.z);
+	ImGui::Text("move  %f  %f  %f", move.x, move.y, move.z);
+	ImGui::End();
 }
 
-void Player::Draw(ViewProjection& viewProjection) {
-
-	model_->Draw(worldTransform_, viewProjection);
-
-}
+void Player::Draw(ViewProjection& viewProjection) { model_->Draw(worldTransform_, viewProjection); }
 
 void Player::OnCollision() {}

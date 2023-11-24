@@ -33,7 +33,6 @@ void GameScene::Initialize() {
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize(model_.get());*/
 
-
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize();
 	followCamera_->SetTarget(&player_->GetWorldTransform());
@@ -45,33 +44,13 @@ void GameScene::Update() {
 
 	player_->Update();
 	//enemy_->Update();
-
+	
+	// カメラの更新、初期化
 	followCamera_->Update();
-
 	viewProjection_.matView = followCamera_->GetViewProjection().matView;
 	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 
 	viewProjection_.TransferMatrix();
-
-	//四隅の処理 右
-	if (worldTransform_.translation_.z >= 0 && worldTransform_.translation_.y >= 0) {
-
-	}
-
-	if (worldTransform_.translation_.z >= 0 && worldTransform_.translation_.y >= 100) {
-
-	}
-
-	if (worldTransform_.translation_.z >= 100 && worldTransform_.translation_.y == 100) {
-
-	}
-
-	if (worldTransform_.translation_.z >= 100 && worldTransform_.translation_.y == 0) {
-
-	}
-
-	//四隅の処理 左
-
 }
 
 void GameScene::CheckAllCollision() {

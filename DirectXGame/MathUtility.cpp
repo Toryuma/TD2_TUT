@@ -154,6 +154,23 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	return Sub;
 }
 
+float Clamp(float num, float min, float max) {
+	// minとnumを比較してnumの方が小さいならminを戻り値にする
+	if (num < min) {
+
+		return min;
+	}
+
+	// maxとnumを比較してnumの方が大きいならmaxを戻り値にする
+	if (num > max) {
+
+		return max;
+	}
+
+	// min ~ maxの範囲内なのでnumを戻り値にする
+	return num;
+}
+
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	Vector3 Trans;
 

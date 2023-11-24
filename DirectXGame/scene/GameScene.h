@@ -11,9 +11,7 @@
 
 #include "Player.h"
 #include "Enemy.h"
-
 #include "Ground.h"
-
 #include "FollowCamera.h"
 
 /// <summary>

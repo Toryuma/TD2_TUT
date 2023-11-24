@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Input.h"
 #include "Model.h"
@@ -13,6 +13,8 @@ public:
 	void Update();
 
 	void Draw(ViewProjection& viewProjection);
+
+
 
 	void OnCollision();
 
@@ -36,4 +38,5 @@ private:
 
 	int PlayerMoveCount_;
 
+    float playerSpeed_ = 0.3f;
 };

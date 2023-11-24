@@ -38,3 +38,6 @@ Matrix4x4 MakeIdentityMatrix();
 Matrix4x4 MakeRotateMatrix(const Vector3& r);
 
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
+
+
+float Clamp(float num, float min, float max);
