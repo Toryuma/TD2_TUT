@@ -11,6 +11,7 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "Skydome.h"
 #include "Ground.h"
 #include "FollowCamera.h"
 
@@ -63,13 +64,19 @@ private: // メンバ変数
 
 	std::unique_ptr<Ground> ground_;
 
-	//std::unique_ptr<Enemy> enemy_;
+	std::unique_ptr<Skydome> skydome_;
+
+	std::unique_ptr<Enemy> enemy_;
 
 	//std::unique_ptr<Wall> wall_;
 
 	std::unique_ptr<Model> model_;
 
+	std::unique_ptr<Model> modelEnemy_;
+
 	std::unique_ptr<Model> modelGround_;
+
+	std::unique_ptr<Model> modelSkydome_;
 
 	//Model* model_ = nullptr;	// モデルクラステスト用
 

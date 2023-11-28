@@ -14,42 +14,52 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	//viewProjectionの初期化
 	viewProjection_.Initialize();
 	viewProjection_.farZ = 1600.0f;
 	viewProjection_.UpdateMatrix();
 
+	//ステージ
 	modelGround_.reset(Model::CreateFromOBJ("ground", true));
-
 	ground_ = std::make_unique<Ground>();
 	ground_->Initialize(modelGround_.get());
+
+	//天球
+	modelSkydome_.reset(Model::CreateFromOBJ("skydome", true));
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize(modelSkydome_.get());
 
 	//プレイヤー
 	model_.reset(Model::CreateFromOBJ("float", true));
 	player_ = std::make_unique<Player>();
 	player_->Initialize(model_.get());
 
-	// Enemy
-	/*model_.reset(Model::CreateFromOBJ("needle_Body", true));
+	//エネミー
+	modelEnemy_.reset(Model::CreateFromOBJ("needle_Body", true));
 	enemy_ = std::make_unique<Enemy>();
-	enemy_->Initialize(model_.get());*/
+	enemy_->Initialize(modelEnemy_.get());
 
+	//追従カメラ
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize();
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 
+	//カメラにプレイヤーのviewprojectionを持たせる
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
 }
 
 void GameScene::Update() {
 
+	//プレイヤーとエネミーの更新
 	player_->Update();
-	//enemy_->Update();
+	enemy_->Update();
 	
 	// カメラの更新、初期化
 	followCamera_->Update();
 	viewProjection_.matView = followCamera_->GetViewProjection().matView;
 	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 
+	//行列の更新
 	viewProjection_.TransferMatrix();
 }
 
@@ -80,8 +90,12 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
 
+	//プレイヤー、エネミー
 	player_->Draw(viewProjection_);
-	//enemy_->Draw(viewProjection_);
+	enemy_->Draw(viewProjection_);
+
+	//ステージ、天球
+	skydome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
 
 	/// <summary>
