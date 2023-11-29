@@ -6,34 +6,25 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete modelSkydome_;
-	delete modelGround_;
 	delete debugcamera_;
 }
 
 void GameScene::Initialize() {
 
-	// ファイル指定テクスチャハンドル
+	// ゲームシーンのテクスチャハンドル
 	textureHandle_ = TextureManager::Load("sen.png");
-
-	// スプライトの生成
-	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	// 3Dモデルの生成
+	// 3Dキューブと3Dキャラの生成
 	model_.reset(Model::Create());
-
-	// 自キャラの生成
-	cube_ = std::make_unique<Cube>();
-
-	// 自キャラの初期化
-	cube_->Initialize(model_.get(), textureHandle_);
+	
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	#pragma region デバックカメラ
+#pragma region デバックカメラ
 	// デバックカメラの生成
 	debugcamera_ = new DebugCamera(1280, 720);
 	debugcamera_->SetFarZ(1400.0f);
@@ -49,22 +40,23 @@ void GameScene::Initialize() {
 	skydome_->Initialize(modelSkydome_);
 #pragma endregion
 
-#pragma region 地面の初期化
+#pragma region プレイヤーの描画
+	// 自キャラの生成
+	player_ = std::make_unique<Player>();
 	// 3Dモデルの生成
-	modelGround_ = Model::CreateFromOBJ("ground", true);
+	playerModel_.reset(Model::CreateFromOBJ("Sphere", true));
 
-	// 地面の生成
-	ground_ = new Ground();
-	// 地面初期化
-	ground_->Initialize(modelGround_);
+	// 自キャラの初期化
+	player_->Initialize(playerModel_.get(), textureHandle_);
+
 #pragma endregion
 
 	// カメラ
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize();
-	followCamera_->SetTarget(&cube_->GetWorldTransform());
+	followCamera_->SetTarget(&player_->GetWorldTransform());
 
-	cube_->SetViewProjection(&followCamera_->GetViewProjection());
+	player_->SetViewProjection(&followCamera_->GetViewProjection());
 }
 
 void GameScene::Update() {
@@ -85,13 +77,13 @@ void GameScene::Update() {
 	}
 
 	// 自キャラの更新
-	cube_->Update();
+	player_->Update();
 
 	// 天球
 	skydome_->Update();
 
 	// 地面
-	ground_->Update();
+	// ground_->Update();
 }
 
 void GameScene::Draw() {
@@ -117,14 +109,14 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
 
-	// プレイヤーの描画
-	cube_->Draw(viewProjection_);
+	// ステージの描画
+	stage_->Draw(viewProjection_);
+
+	// 自キャラの描画
+	player_->Draw(viewProjection_);
 
 	// 天球の描画
 	skydome_->Draw(viewProjection_);
-
-	// 地面の描画
-	ground_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

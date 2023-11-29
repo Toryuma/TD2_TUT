@@ -10,10 +10,10 @@
 #include "WorldTransform.h"
 #include "DebugCamera.h"
 
-#include "Cube.h"
+#include "Player.h"
+#include "Stage.h"
 #include <memory>
 #include "Skydome.h"
-#include "Ground.h"
 #include "FollowCamera.h"
 
 /// <summary>
@@ -55,6 +55,14 @@ private: // メンバ変数
 	Sprite* sprite_ = nullptr;
 	// 3Dモデル
 	std::unique_ptr<Model> model_;
+
+	// 3Dプレイヤー
+	std::unique_ptr<Model> playerModel_;
+	// 自キャラ
+	std::unique_ptr<Player> player_;
+	// ステージ
+	std::unique_ptr<Stage> stage_;
+
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
@@ -63,14 +71,12 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	// デバックカメラの生成
 	DebugCamera* debugcamera_ = nullptr;
-	// 自キャラ
-	std::unique_ptr<Cube> cube_;
 	// 天球
 	Skydome* skydome_ = nullptr;
 	// 3D天球モデル
 	Model* modelSkydome_ = nullptr;
 	// 地面
-	Ground* ground_ = nullptr;
+	// Ground* ground_ = nullptr;
 	// 3D地面モデル
 	Model* modelGround_ = nullptr;
 	// カメラ
