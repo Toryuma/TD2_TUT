@@ -8,7 +8,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
+#include "DebugCamera.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Skydome.h"
@@ -57,6 +57,8 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 
+	std::unique_ptr<DebugCamera> debugCamera_;
+	bool isDebugCameraActive_ = false;
 	//プレイヤー
 	std::unique_ptr<Player> player_;
 

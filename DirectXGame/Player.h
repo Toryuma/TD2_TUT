@@ -34,9 +34,5 @@ private:
 
 	Vector3 velocity_ = {};
 
-	bool PlayerMoveFlag_;
-
-	int PlayerMoveCount_;
-
     float playerSpeed_ = 0.3f;
 };

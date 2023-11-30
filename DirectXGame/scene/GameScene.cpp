@@ -1,7 +1,7 @@
 #include "GameScene.h"
+#include "AxisIndicator.h"
 #include "TextureManager.h"
 #include <cassert>
-#include "AxisIndicator.h"
 
 GameScene::GameScene() {}
 
@@ -14,58 +14,74 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	//viewProjectionの初期化
+	// viewProjectionの初期化
 	viewProjection_.Initialize();
 	viewProjection_.farZ = 1600.0f;
 	viewProjection_.UpdateMatrix();
 
-	//ステージ
+	// ステージ
 	modelGround_.reset(Model::CreateFromOBJ("ground", true));
+
 	ground_ = std::make_unique<Ground>();
 	ground_->Initialize(modelGround_.get());
 
-	//天球
+	// 天球
 	modelSkydome_.reset(Model::CreateFromOBJ("skydome", true));
+
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(modelSkydome_.get());
 
-	//プレイヤー
+	// プレイヤー
 	model_.reset(Model::CreateFromOBJ("float", true));
+
 	player_ = std::make_unique<Player>();
 	player_->Initialize(model_.get());
 
-	//エネミー
+	// エネミー
 	modelEnemy_.reset(Model::CreateFromOBJ("needle_Body", true));
+
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize(modelEnemy_.get());
 
-	//追従カメラ
+	// 追従カメラ
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize();
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 
-	//カメラにプレイヤーのviewprojectionを持たせる
+	// カメラにプレイヤーのviewprojectionを持たせる
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
+
+	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 }
 
 void GameScene::Update() {
 
-	//プレイヤーとエネミーの更新
+	// プレイヤーとエネミーの更新
 	player_->Update();
 	enemy_->Update();
-	
-	// カメラの更新、初期化
-	followCamera_->Update();
-	viewProjection_.matView = followCamera_->GetViewProjection().matView;
-	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 
-	//行列の更新
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_SPACE)) {
+		// trueならfalse,falseならtrueにする
+		isDebugCameraActive_ = !isDebugCameraActive_;
+	}
+#endif // _DEBUG
+
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+	} else {
+		// カメラの更新、初期化
+		followCamera_->Update();
+		viewProjection_.matView = followCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+	}
+	// 行列の更新
 	viewProjection_.TransferMatrix();
 }
 
-void GameScene::CheckAllCollision() {
-
-}
+void GameScene::CheckAllCollision() {}
 
 void GameScene::Draw() {
 
@@ -90,11 +106,11 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
 
-	//プレイヤー、エネミー
+	// プレイヤー、エネミー
 	player_->Draw(viewProjection_);
 	enemy_->Draw(viewProjection_);
 
-	//ステージ、天球
+	// ステージ、天球
 	skydome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
 
@@ -119,5 +135,3 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
-
-

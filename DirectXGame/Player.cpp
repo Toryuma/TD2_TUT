@@ -13,8 +13,10 @@ void Player::Initialize(Model* model) {
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_.x = 0.0f;
-	worldTransform_.translation_.y = 0.0f;
+	worldTransform_.translation_.y = 15.0f;
 	worldTransform_.translation_.z = 0.0f;
+
+	worldTransform_.rotation_.x = ToRadian(270);
 }
 
 void Player::Update() {
@@ -31,7 +33,7 @@ void Player::Update() {
 
 		move = Multiply(speed, Normalize(move));
 	}
-	
+
 	// 十字ー等で入力したときにmoveの値を変える
 	if (Input::GetInstance()->PushKey(DIK_UP)) {
 
@@ -62,6 +64,15 @@ void Player::Update() {
 		if (worldTransform_.translation_.z == 0 && worldTransform_.translation_.y < NAX_MOVE) {
 
 			worldTransform_.translation_.y += playerSpeed_;
+
+			if (worldTransform_.translation_.y >= 28) {
+				float l = 2 + (worldTransform_.translation_.y - 30);
+				worldTransform_.rotation_.x = ToRadian(270) + ((l / 2) * ToRadian(45));
+			} 
+			else if (worldTransform_.translation_.y <= 2) {
+				float l = 2 + (worldTransform_.translation_.y - 2);
+				worldTransform_.rotation_.x = ToRadian(225) + ((l / 2) * ToRadian(45));
+			}
 		}
 
 		// 奥方向に向かう処理
@@ -70,49 +81,115 @@ void Player::Update() {
 		    worldTransform_.translation_.z < NAX_MOVE) {
 
 			worldTransform_.translation_.z += playerSpeed_;
+
+			if (worldTransform_.translation_.z <= 2) {
+				float l = 2 + (worldTransform_.translation_.z - 2);
+				worldTransform_.rotation_.x = ToRadian(315) + ((l / 2) * ToRadian(45));
+			} else if (worldTransform_.translation_.z >= 28) {
+				float l = 2 + (worldTransform_.translation_.z - 30);
+				worldTransform_.rotation_.x = ToRadian(0) + ((l / 2) * ToRadian(45));
+			}
 		}
 
 		// 下る処理
 		else if (worldTransform_.translation_.z == NAX_MOVE && worldTransform_.translation_.y > 0) {
 
 			worldTransform_.translation_.y -= playerSpeed_;
+
+			if (worldTransform_.translation_.y >= 28) {
+				float l = 2 + (28 - worldTransform_.translation_.y);
+				worldTransform_.rotation_.x = ToRadian(45) + ((l / 2) * ToRadian(45));
+			} 
+			else if (worldTransform_.translation_.y <= 2) {
+				float l = 2 - (worldTransform_.translation_.y);
+				worldTransform_.rotation_.x = ToRadian(90) + ((l / 2) * ToRadian(45));
+			}
 		}
 		// 　手前に来る
 		else if (worldTransform_.translation_.z > 0 && worldTransform_.translation_.y == 0) {
 
 			worldTransform_.translation_.z -= playerSpeed_;
+
+			if (worldTransform_.translation_.z >= 28) {
+				float l = 2 + (28 - worldTransform_.translation_.z);
+				worldTransform_.rotation_.x = ToRadian(135) + ((l / 2) * ToRadian(45));
+			} 
+			else if (worldTransform_.translation_.z <= 2) {
+				float l = 2 - (worldTransform_.translation_.z);
+				worldTransform_.rotation_.x = ToRadian(180) + ((l / 2) * ToRadian(45));
+			}
 		}
 
 		worldTransform_.translation_.z = Clamp(worldTransform_.translation_.z, 0, NAX_MOVE);
 		worldTransform_.translation_.y = Clamp(worldTransform_.translation_.y, 0, NAX_MOVE);
 	}
+
 	// 下に入力したときに
 	else if (move.z < 0) {
-
+	//	worldTransform_.rotation_.y = ToRadian(180);
 		// 奥に移動
 		if (worldTransform_.translation_.z < NAX_MOVE && worldTransform_.translation_.y == 0) {
 
 			worldTransform_.translation_.z += playerSpeed_;
+
+			/*if (worldTransform_.translation_.z <= 2) {
+				float l = 2 - (worldTransform_.translation_.z);
+				worldTransform_.rotation_.x = ToRadian(235) - ((l / 2) * ToRadian(45));
+			}
+
+			else if (worldTransform_.translation_.z >= 28) {
+				float l = 2 + (worldTransform_.translation_.z - 30);
+				worldTransform_.rotation_.x = ToRadian(235) - ((l / 2) * ToRadian(45));
+			}*/
 		}
 
 		// 上に向かう処理(奥)
 		else if (
-		    worldTransform_.translation_.z == NAX_MOVE &&
-		    worldTransform_.translation_.y < NAX_MOVE) {
+		    worldTransform_.translation_.z == NAX_MOVE && worldTransform_.translation_.y < NAX_MOVE) {
 
 			worldTransform_.translation_.y += playerSpeed_;
+
+			/*if (worldTransform_.translation_.y <= 2) {
+				float l = 2 - (worldTransform_.translation_.y);
+				worldTransform_.rotation_.x = ToRadian(180) - ((l / 2) * ToRadian(45));
+			}
+
+			else if (worldTransform_.translation_.y >= 28) {
+				float l = 2 + (worldTransform_.translation_.y - 30);
+				worldTransform_.rotation_.x = ToRadian(180) - ((l / 2) * ToRadian(45));
+			}*/
 		}
 
 		// 手前に戻る処理
 		else if (worldTransform_.translation_.z > 0 && worldTransform_.translation_.y == NAX_MOVE) {
 
 			worldTransform_.translation_.z -= playerSpeed_;
+
+			/*if (worldTransform_.translation_.z >= 28) {
+				float l = 2 + (worldTransform_.translation_.z - 30);
+				worldTransform_.rotation_.x = ToRadian(135) - ((l / 2) * ToRadian(45));
+			}
+
+			else if (worldTransform_.translation_.y <= 2) {
+				float l = 2 - (worldTransform_.translation_.y);
+				worldTransform_.rotation_.x = ToRadian(135) - ((l / 2) * ToRadian(45));
+			}*/
 		}
 
 		//  下に戻る（手前）
 		else if (worldTransform_.translation_.z < NAX_MOVE && worldTransform_.translation_.y > 0) {
 
 			worldTransform_.translation_.y -= playerSpeed_;
+
+			/*if (worldTransform_.translation_.y >= 28) {
+				float l = 2 + (28 - worldTransform_.translation_.y);
+				worldTransform_.rotation_.x = ToRadian(270) - ((l / 2) * ToRadian(45));
+			}
+
+			else if (worldTransform_.translation_.y <= 2) {
+				float l = 2 - (worldTransform_.translation_.y);
+				worldTransform_.rotation_.x = ToRadian(235) - ((l / 2) * ToRadian(45));
+			}*/
 		}
 
 		worldTransform_.translation_.z = Clamp(worldTransform_.translation_.z, 0, NAX_MOVE);
@@ -205,18 +282,17 @@ void Player::Update() {
 
 	worldTransform_.UpdateMatrix();
 
-	ImGui::Begin("Player Debug");
+	/*ImGui::Begin("Player Debug");
 	ImGui::Text(
 	    "PlayerPosition  %f  %f  %f", worldTransform_.translation_.x,
 	    worldTransform_.translation_.y, worldTransform_.translation_.z);
+	ImGui::Text(
+	    "PlayerRotate  %f  %f  %f", worldTransform_.rotation_.x, worldTransform_.rotation_.y,
+	    worldTransform_.rotation_.z);
 	ImGui::Text("move  %f  %f  %f", move.x, move.y, move.z);
-	ImGui::End();
+	ImGui::End();*/
 }
 
-void Player::Draw(ViewProjection& viewProjection) { 
-	
-	model_->Draw(worldTransform_, viewProjection); 
-
-}
+void Player::Draw(ViewProjection& viewProjection) { model_->Draw(worldTransform_, viewProjection); }
 
 void Player::OnCollision() {}

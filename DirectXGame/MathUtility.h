@@ -8,6 +8,8 @@
 #include "Matrix4x4.h"
 #include "Vector3.h"
 
+inline float ToRadian(int degree) { return degree * 3.14f / 180.0f; }
+
 Vector3 Add(Vector3 v1, Vector3 v2);
 
 Vector3 Subtract(Vector3& v1, Vector3& v2);
@@ -39,5 +41,7 @@ Matrix4x4 MakeRotateMatrix(const Vector3& r);
 
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
+
+Matrix4x4 Inverse(const Matrix4x4& m);
 
 float Clamp(float num, float min, float max);

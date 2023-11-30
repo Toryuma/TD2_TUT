@@ -2,6 +2,7 @@
 
 #include "Model.h"
 #include "WorldTransform.h"
+#include "ViewProjection.h"
 
 class Enemy {
 public:
@@ -16,10 +17,7 @@ public:
 	void Draw(ViewProjection& viewProjection);
 	
 	//当たり判定
-	void OnCollision();
-	
-	//死亡フラグ
-	bool IsDead() const { return isDead_; }
+	//void OnCollision();
 
 private:
 
@@ -32,7 +30,7 @@ private:
 	Vector3 velocity_ = {};
 
 	// 速度
-    float EnemySpeed_ = 0.3f;
+    float EnemySpeed_ = 0.1f;
 
 	bool isDead_ = true;
 };
